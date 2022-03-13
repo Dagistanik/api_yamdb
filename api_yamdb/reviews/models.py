@@ -105,14 +105,13 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    review_id = models.ForeignKey(
-        Review,
+    author = models.ForeignKey(
+        User,
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    text = models.TextField(null=True, blank=True)
-    author = models.ForeignKey(
-        User,
+    review_id = models.ForeignKey(
+        Review,
         on_delete=models.CASCADE,
         related_name='comments'
     )
@@ -121,6 +120,7 @@ class Comment(models.Model):
         auto_now_add=True,
         db_index=True
     )
+    text = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.text

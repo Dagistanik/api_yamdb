@@ -135,9 +135,10 @@ class UsersSerializer(serializers.ModelSerializer):
         extra_kwargs = {'email': {'required': True}}
 
     def validate(self, data):
-        if User.objects.filter(email=data.get('email')).exists():
+        email = data.get('email')
+        if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
-                'Пользователь с таким `e-mail` уже есть.'
+                f'Пользователь с этим e-mail ({email}) уже есть.'
             )
         return data
 
