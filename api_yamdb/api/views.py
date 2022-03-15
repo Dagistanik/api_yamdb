@@ -172,7 +172,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, review_id=review)
 
     def get_queryset(self):
-        review = self.kwargs.get('review_id')
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
         return Comment.objects.filter(review_id=review).order_by('id')
 
 
@@ -186,5 +186,5 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, title=title)
 
     def get_queryset(self):
-        title_id = self.kwargs.get('title_id')
+        title_id = get_object_or_404(Title, id=self.kwargs.get('title_id'))
         return Review.objects.filter(title=title_id).order_by('id')
