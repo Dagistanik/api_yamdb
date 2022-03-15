@@ -110,6 +110,7 @@ class Review(models.Model):
     def __str__(self):
         return self.text
 
+
 class Comment(models.Model):
     author = models.ForeignKey(
         User,
