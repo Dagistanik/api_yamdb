@@ -24,7 +24,7 @@ class User(AbstractUser):
         'Биография',
         blank=True,
     )
-    
+
     class Meta:
         ordering = ('-date_joined',)
 
