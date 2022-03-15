@@ -3,30 +3,28 @@ from django.db import models
 
 
 class User(AbstractUser):
-    """Модель кастомизированного пользователя.
-    Необязательное поле password, необходимое только для суперюзера.
-    """
+    """Кастомизируем модель User."""
     USER_ROLE = (
         ('admin', 'admin'),
         ('moderator', 'moderator'),
         ('user', 'user'),
     )
     password = models.CharField(
-        'Пароль',
+        'password',
+        null=True,
         max_length=128,
         blank=True,
-        null=True,
+    )
+    role = models.CharField(
+        choices=USER_ROLE,
+        max_length=20,
+        default='user'
     )
     bio = models.TextField(
         'Биография',
         blank=True,
     )
-    role = models.CharField(
-        max_length=20,
-        choices=USER_ROLE,
-        default='user'
-    )
-
+    
     class Meta:
         ordering = ('-date_joined',)
 
