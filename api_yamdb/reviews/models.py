@@ -10,6 +10,9 @@ class Category(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.slug
 
@@ -17,6 +20,9 @@ class Category(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=256, null=True, blank=True)
     slug = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ['id']
 
     def __str__(self):
         return self.slug
@@ -30,7 +36,7 @@ class Title(models.Model):
     description = models.TextField(default='', null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name="title",
+        related_name='title',
         null=True, blank=True)
 
     genre = models.ManyToManyField(Genre, through='GenreTitle', blank=True)
@@ -45,6 +51,9 @@ class Title(models.Model):
 
         return(rating['score__avg'])
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.name
 
@@ -53,12 +62,12 @@ class GenreTitle(models.Model):
     title_id = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name="title",
+        related_name='title',
     )
     genre_id = models.ForeignKey(
         Genre,
         on_delete=models.CASCADE,
-        related_name="genre",
+        related_name='genre',
     )
 
     class Meta:

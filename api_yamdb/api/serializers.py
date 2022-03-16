@@ -170,7 +170,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate_score(self, value):
         if value not in range(1, 11):
             raise serializers.ValidationError(
-                "Оценка должна быть в диапазоне [1, 10]"
+                'Оценка должна быть в диапазоне [1, 10]'
             )
         return value
 
