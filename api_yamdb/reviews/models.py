@@ -61,7 +61,7 @@ class Title(models.Model):
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name='title',
+        related_name='titles',
         null=True, blank=True)
 
     genre = models.ManyToManyField(Genre, through='GenreTitle', blank=True)
@@ -94,7 +94,7 @@ class GenreTitle(models.Model):
     genre = models.ForeignKey(
         Genre,
         on_delete=models.CASCADE,
-        related_name='genre',
+        related_name='genres',
     )
 
     class Meta:
