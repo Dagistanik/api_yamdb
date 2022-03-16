@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
 
-from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
+from reviews.models import Category, Genre, GenreTitle, Review, Title
 from .custom_filters import CategoryFilter
 from .mixins import BaseViewSet
 from .permissions import AuthorAdminModer, IsAdminOrReadOnly
@@ -173,7 +173,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
-        return Comment.objects.filter(review_id=review)
+        return review.comments.all()
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -186,5 +186,5 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, title=title)
 
     def get_queryset(self):
-        title_id = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        return Review.objects.filter(title=title_id)
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        return title.reviews.all()
