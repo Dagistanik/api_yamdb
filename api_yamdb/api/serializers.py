@@ -119,7 +119,7 @@ class TitleSerializer(serializers.ModelSerializer):
         titles = Title.objects.create(**validated_data)
         for genre in genres:
             current_genre = get_object_or_404(Genre, slug=genre)
-            GenreTitle.objects.create(genre_id=current_genre, title_id=titles)
+            GenreTitle.objects.create(genre=current_genre, title=titles)
         return titles
 
 
@@ -194,7 +194,7 @@ class CommentSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True,
     )
-    review_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    review = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Comment

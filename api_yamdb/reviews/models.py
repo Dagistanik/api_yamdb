@@ -61,16 +61,16 @@ class Title(models.Model):
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name='titles',
+        related_name='title',
         null=True, blank=True)
 
     genre = models.ManyToManyField(Genre, through='GenreTitle', blank=True)
 
     @property
     def rating(self):
-        if not Review.objects.filter(title_id=self.id).exists():
+        if not Review.objects.filter(title=self.id).exists():
             return None
-        rating = Review.objects.filter(title_id=self.id).aggregate(
+        rating = Review.objects.filter(title=self.id).aggregate(
             models.Avg('score')
         )
 
@@ -86,12 +86,12 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    title_id = models.ForeignKey(
+    title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
         related_name='title',
     )
-    genre_id = models.ForeignKey(
+    genre = models.ForeignKey(
         Genre,
         on_delete=models.CASCADE,
         related_name='genre',
@@ -100,13 +100,13 @@ class GenreTitle(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['title_id', 'genre_id'],
+                fields=['title', 'genre'],
                 name='unique_title_genre'
             )
         ]
 
     def __str__(self):
-        return f'{self.title_id} {self.genre_id}'
+        return f'{self.title} {self.genre}'
 
 
 class Review(models.Model):
@@ -147,7 +147,7 @@ class Review(models.Model):
         ordering = ('-pub_date',)
         constraints = [
             models.UniqueConstraint(
-                fields=['author', 'title_id'],
+                fields=['author', 'title'],
                 name='unique_review'
             )
         ]
@@ -162,7 +162,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    review_id = models.ForeignKey(
+    review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments'

@@ -110,7 +110,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         if genre is not None:
             genre = get_object_or_404(Genre, slug=genre)
             title_list = GenreTitle.objects.values_list(
-                'title_id', flat=True).filter(genre_id=genre)
+                'title', flat=True).filter(genre_id=genre)
             queryset = Title.objects.filter(id__in=title_list)
         return queryset
 
@@ -169,7 +169,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, id=review_id)
-        serializer.save(author=self.request.user, review_id=review)
+        serializer.save(author=self.request.user, review=review)
 
     def get_queryset(self):
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
