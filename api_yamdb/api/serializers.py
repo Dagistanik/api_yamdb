@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
-from .tokens import default_token_generator
+from api.tokens import default_token_generator
 
 User = get_user_model()
 
@@ -119,7 +119,7 @@ class TitleSerializer(serializers.ModelSerializer):
         titles = Title.objects.create(**validated_data)
         for genre in genres:
             current_genre = get_object_or_404(Genre, slug=genre)
-            GenreTitle.objects.create(genre=current_genre, title=titles)
+            GenreTitle.objects.create(genre_id=current_genre, title_id=titles)
         return titles
 
 
@@ -170,7 +170,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate_score(self, value):
         if value not in range(1, 11):
             raise serializers.ValidationError(
-                'Оценка должна быть в диапазоне [1, 10]'
+                "Оценка должна быть в диапазоне [1, 10]"
             )
         return value
 
@@ -194,7 +194,7 @@ class CommentSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True,
     )
-    review = serializers.PrimaryKeyRelatedField(read_only=True)
+    review_id = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Comment

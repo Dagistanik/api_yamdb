@@ -7,11 +7,11 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='YaMDb API',
+        title="YaMDb API",
         default_version='v1',
         description=(
-            'Проект YaMDb собирает отзывы пользователей '
-            'на различные произведения.'
+            "Проект YaMDb собирает отзывы пользователей "
+            "на различные произведения."
         ),
     ),
     public=True,

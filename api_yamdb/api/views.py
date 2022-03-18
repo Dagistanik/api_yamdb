@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
 
-from reviews.models import Category, Genre, GenreTitle, Review, Title
+from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 from .custom_filters import CategoryFilter
 from .mixins import BaseViewSet
 from .permissions import AuthorAdminModer, IsAdminOrReadOnly
@@ -18,7 +18,10 @@ from .serializers import (
     ReviewSerializer, SignupUserSerializer, TitleGETSerializer,
     TitleSerializer, TokenSerializer, UsersSerializer,
 )
-from .tokens import default_token_generator
+from api.tokens import default_token_generator
+from api_yamdb.settings import FROM_EMAIL
+
+
 
 User = get_user_model()
 
@@ -36,7 +39,7 @@ def send_confirmation_code(request):
                 f'{serializer.instance.username} your '
                 f'confirmation_code: {code}'
             ),
-            from_email='server@mail.fake',
+            from_email=FROM_EMAIL,
             recipient_list=[serializer.instance.email]
         )
         return Response(
@@ -72,25 +75,25 @@ def get_token(request):
 
 
 class CategoryViewSet(BaseViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('id')
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_fields = ('name', 'slug')
     search_fields = ('name', 'slug')
     lookup_field = 'slug'
-    lookup_value_regex = '[^/]+'
+    lookup_value_regex = "[^/]+"
 
 
 class GenreViewSet(BaseViewSet):
-    queryset = Genre.objects.all()
+    queryset = Genre.objects.all().order_by('id')
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_fields = ('name', 'slug')
     search_fields = ('name', 'slug')
     lookup_field = 'slug'
-    lookup_value_regex = '[^/]+'
+    lookup_value_regex = "[^/]+"
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -105,11 +108,12 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
     def get_queryset(self):
-        queryset = Title.objects.all()
+        queryset = Title.objects.all().order_by('id')
         genre = self.request.query_params.get('genre')
         if genre is not None:
             genre = get_object_or_404(Genre, slug=genre)
             title_list = GenreTitle.objects.values_list(
+
                 'title', flat=True).filter(genre=genre)
             queryset = Title.objects.filter(id__in=title_list)
         return queryset
@@ -128,7 +132,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class UsersViewSet(ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     permission_classes = (permissions.IsAdminUser,)
     serializer_class = UsersSerializer
     lookup_field = 'username'
@@ -169,11 +173,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, id=review_id)
-        serializer.save(author=self.request.user, review=review)
+        serializer.save(author=self.request.user, review_id=review)
 
     def get_queryset(self):
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
-        return review.comments.all()
+        return Comment.objects.filter(review_id=review).order_by('id')
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -186,5 +190,5 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, title=title)
 
     def get_queryset(self):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        return title.reviews.all()
+        title_id = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        return Review.objects.filter(title=title_id).order_by('id')
