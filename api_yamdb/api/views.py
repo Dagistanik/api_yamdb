@@ -22,7 +22,6 @@ from api.tokens import default_token_generator
 from api_yamdb.settings import FROM_EMAIL
 
 
-
 User = get_user_model()
 
 
@@ -113,7 +112,6 @@ class TitleViewSet(viewsets.ModelViewSet):
         if genre is not None:
             genre = get_object_or_404(Genre, slug=genre)
             title_list = GenreTitle.objects.values_list(
-
                 'title', flat=True).filter(genre=genre)
             queryset = Title.objects.filter(id__in=title_list)
         return queryset
