@@ -110,7 +110,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         if genre is not None:
             genre = get_object_or_404(Genre, slug=genre)
             title_list = GenreTitle.objects.values_list(
-                'title', flat=True).filter(genre_id=genre)
+                'title', flat=True).filter(genre=genre)
             queryset = Title.objects.filter(id__in=title_list)
         return queryset
 
@@ -124,7 +124,7 @@ class TitleViewSet(viewsets.ModelViewSet):
             genres_data = serializer.instance.genre
         for genre_data in genres_data.all():
             genre = get_object_or_404(Genre, slug=genre_data)
-            GenreTitle.objects.create(title_id=title, genre_id=genre)
+            GenreTitle.objects.create(title=title, genre=genre)
 
 
 class UsersViewSet(ModelViewSet):
