@@ -30,7 +30,7 @@ class Title(models.Model):
     description = models.TextField(default='', null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name="title",
+        related_name="titles",
         null=True, blank=True)
 
     genre = models.ManyToManyField(Genre, through='GenreTitle', blank=True)
@@ -108,7 +108,7 @@ class Review(models.Model):
         ]
 
     def __str__(self):
-        return self.text
+        return self.text[:15]
 
 
 class Comment(models.Model):
@@ -133,4 +133,4 @@ class Comment(models.Model):
         ordering = ('-pub_date',)
 
     def __str__(self):
-        return self.text
+        return self.text[:15]

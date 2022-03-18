@@ -18,7 +18,10 @@ from .serializers import (
     ReviewSerializer, SignupUserSerializer, TitleGETSerializer,
     TitleSerializer, TokenSerializer, UsersSerializer,
 )
-from .tokens import default_token_generator
+from api.tokens import default_token_generator
+from api_yamdb.settings import FROM_EMAIL
+
+
 
 User = get_user_model()
 
@@ -36,7 +39,7 @@ def send_confirmation_code(request):
                 f'{serializer.instance.username} your '
                 f'confirmation_code: {code}'
             ),
-            from_email='server@mail.fake',
+            from_email=FROM_EMAIL,
             recipient_list=[serializer.instance.email]
         )
         return Response(
