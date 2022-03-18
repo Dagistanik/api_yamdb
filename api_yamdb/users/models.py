@@ -1,14 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-class User(AbstractUser):
-    """Кастомизируем модель User."""
-    USER_ROLE = (
+USER_ROLE = (
         ('admin', 'admin'),
         ('moderator', 'moderator'),
         ('user', 'user'),
     )
+
+class User(AbstractUser):
+    """Кастомизируем модель User."""
     password = models.CharField(
         'password',
         null=True,

@@ -18,7 +18,9 @@ from .serializers import (
     ReviewSerializer, SignupUserSerializer, TitleGETSerializer,
     TitleSerializer, TokenSerializer, UsersSerializer,
 )
-from .tokens import default_token_generator
+from api.tokens import default_token_generator
+from api_yamdb.settings import FROM_EMAIL
+
 
 User = get_user_model()
 
@@ -36,7 +38,7 @@ def send_confirmation_code(request):
                 f'{serializer.instance.username} your '
                 f'confirmation_code: {code}'
             ),
-            from_email='server@mail.fake',
+            from_email=FROM_EMAIL,
             recipient_list=[serializer.instance.email]
         )
         return Response(
@@ -111,6 +113,7 @@ class TitleViewSet(viewsets.ModelViewSet):
             genre = get_object_or_404(Genre, slug=genre)
             title_list = GenreTitle.objects.values_list(
                 'title', flat=True).filter(genre_id=genre)
+
             queryset = Title.objects.filter(id__in=title_list)
         return queryset
 
@@ -124,7 +127,7 @@ class TitleViewSet(viewsets.ModelViewSet):
             genres_data = serializer.instance.genre
         for genre_data in genres_data.all():
             genre = get_object_or_404(Genre, slug=genre_data)
-            GenreTitle.objects.create(title_id=title, genre_id=genre)
+            GenreTitle.objects.create(title=title, genre=genre)
 
 
 class UsersViewSet(ModelViewSet):
