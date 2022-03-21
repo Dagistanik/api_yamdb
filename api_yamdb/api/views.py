@@ -25,7 +25,7 @@ from api_yamdb.settings import FROM_EMAIL
 User = get_user_model()
 
 
-@api_view(['POST'])
+@api_view(('POST',))
 @permission_classes((permissions.AllowAny,))
 def send_confirmation_code(request):
     serializer = SignupUserSerializer(data=request.data)
@@ -39,7 +39,7 @@ def send_confirmation_code(request):
                 f'confirmation_code: {code}'
             ),
             from_email=FROM_EMAIL,
-            recipient_list=[serializer.instance.email]
+            recipient_list=(serializer.instance.email,)
         )
         return Response(
             serializer.data,
@@ -52,7 +52,7 @@ def send_confirmation_code(request):
     )
 
 
-@api_view(['POST'])
+@api_view(('POST',))
 @permission_classes((permissions.AllowAny,))
 def get_token(request):
     serializer = TokenSerializer(data=request.data)

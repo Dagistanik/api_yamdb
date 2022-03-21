@@ -23,10 +23,10 @@ router.register(
     basename='comments'
 )
 
-urlpatterns = [
+urlpatterns = (
     path('v1/users/me/', views.MeViewSet.as_view()),
     path('v1/auth/signup/', views.send_confirmation_code, name='signup'),
     path('v1/auth/token/', views.get_token, name='token'),
     path('v1/', include(router.urls)),
 
-]
+)

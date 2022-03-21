@@ -2,10 +2,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 USER_ROLE = (
-        ('admin', 'admin'),
-        ('moderator', 'moderator'),
-        ('user', 'user'),
-    )
+    ('admin', 'admin'),
+    ('moderator', 'moderator'),
+    ('user', 'user'),
+)
+
 
 class User(AbstractUser):
     """Кастомизируем модель User."""
