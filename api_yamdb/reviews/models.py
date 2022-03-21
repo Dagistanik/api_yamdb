@@ -2,6 +2,7 @@ from datetime import date
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from api_yamdb.settings import SCORE_MAX, SCORE_MIN
 
 from users.models import User
 
@@ -128,11 +129,11 @@ class Review(models.Model):
     )
     score = models.PositiveIntegerField(
         validators=[
-            MaxValueValidator(10),
-            MinValueValidator(1)
+            MaxValueValidator(SCORE_MAX),
+            MinValueValidator(SCORE_MIN)
         ],
         verbose_name='Оценка произведения',
-        help_text='от 1 до 10'
+        help_text=f'от {SCORE_MIN} до {SCORE_MAX}'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,

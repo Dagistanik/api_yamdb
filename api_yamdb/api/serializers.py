@@ -5,6 +5,8 @@ from rest_framework import serializers
 from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 from api.tokens import default_token_generator
 
+from api_yamdb.settings import SCORE_MIN, SCORE_MAX
+
 User = get_user_model()
 
 
@@ -168,9 +170,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_score(self, value):
-        if value not in range(1, 11):
+        # if value not in range(1, 11):
+        if value < SCORE_MIN and value > SCORE_MAX:
             raise serializers.ValidationError(
-                'Оценка должна быть в диапазоне [1, 10]'
+                f'Оценка должна быть в диапазоне [{SCORE_MIN}, {SCORE_MAX}]'
             )
         return value
 
