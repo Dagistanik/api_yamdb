@@ -141,4 +141,7 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 # сonfirmation_code
 PASSWORD_RESET_TIMEOUT_DAYS = 356
 
-FROM_EMAIL='server@mail.fake'
+FROM_EMAIL = 'server@mail.fake'
+
+SCORE_MIN = 1
+SCORE_MAX = 10
