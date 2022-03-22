@@ -26,6 +26,10 @@ class User(AbstractUser):
         blank=True,
     )
 
+    @property
+    def is_moderator(self):
+        return self.role == 'moderator'
+
     class Meta:
         ordering = ('-date_joined',)
 

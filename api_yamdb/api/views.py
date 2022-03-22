@@ -29,26 +29,21 @@ User = get_user_model()
 @permission_classes((permissions.AllowAny,))
 def send_confirmation_code(request):
     serializer = SignupUserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        code = default_token_generator.make_token(serializer.instance)
-        send_mail(
-            subject='confirmation_code',
-            message=(
-                f'{serializer.instance.username} your '
-                f'confirmation_code: {code}'
-            ),
-            from_email=FROM_EMAIL,
-            recipient_list=(serializer.instance.email,)
-        )
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
-
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    code = default_token_generator.make_token(serializer.instance)
+    send_mail(
+        subject='confirmation_code',
+        message=(
+            f'{serializer.instance.username} your '
+            f'confirmation_code: {code}'
+        ),
+        from_email=FROM_EMAIL,
+        recipient_list=(serializer.instance.email,)
+    )
     return Response(
-        serializer.errors,
-        status=status.HTTP_400_BAD_REQUEST
+        serializer.data,
+        status=status.HTTP_200_OK
     )
 
 
@@ -56,20 +51,15 @@ def send_confirmation_code(request):
 @permission_classes((permissions.AllowAny,))
 def get_token(request):
     serializer = TokenSerializer(data=request.data)
-    if serializer.is_valid():
-        data = serializer.save()
-        user = get_object_or_404(User, username=data['username'])
-        user.password = ''
-        user.save()
-        token = str(AccessToken.for_user(user))
-        return Response(
-            {'token': token},
-            status=status.HTTP_200_OK
-        )
-
+    serializer.is_valid(raise_exception=True)
+    data = serializer.save()
+    user = get_object_or_404(User, username=data['username'])
+    user.password = ''
+    user.save()
+    token = str(AccessToken.for_user(user))
     return Response(
-        serializer.errors,
-        status=status.HTTP_400_BAD_REQUEST
+        {'token': token},
+        status=status.HTTP_200_OK
     )
 
 
@@ -157,10 +147,9 @@ class MeViewSet(APIView):
     def patch(self, request):
         user = self.get_object(request.user.username)
         serializer = MeSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
