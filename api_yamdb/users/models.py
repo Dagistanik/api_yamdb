@@ -1,37 +1,44 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+ADMIN_ROLE_NAME = 'admin'
+MODERATOR_ROLE_NAME = 'moderator'
+USER_ROLE_NAME = 'user'
+
 USER_ROLE = (
-    ('admin', 'admin'),
-    ('moderator', 'moderator'),
-    ('user', 'user'),
+    (ADMIN_ROLE_NAME),
+    (MODERATOR_ROLE_NAME),
+    (USER_ROLE_NAME),
 )
 
 
 class User(AbstractUser):
     """Кастомизируем модель User."""
     password = models.CharField(
-        'password',
+        help_text='password',
         null=True,
         max_length=128,
         blank=True,
     )
     role = models.CharField(
+        help_text='role',
         choices=USER_ROLE,
         max_length=20,
         default='user'
     )
     bio = models.TextField(
-        'Биография',
+        help_text='bio',
         blank=True,
     )
 
     @property
     def is_moderator(self):
-        return self.role == 'moderator'
+        return self.role == MODERATOR_ROLE_NAME
 
     class Meta:
         ordering = ('-date_joined',)
+        verbose_name = 'User'
+        verbose_name_plural = 'User'
 
     def save(self, *args, **kwargs):
         if self.role == 'admin':
