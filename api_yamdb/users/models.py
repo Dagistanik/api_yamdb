@@ -19,16 +19,19 @@ class User(AbstractUser):
         null=True,
         max_length=128,
         blank=True,
+        verbose_name='Пароль'
     )
     role = models.CharField(
         help_text='role',
         choices=USER_ROLE,
         max_length=20,
+        verbose_name='Роль',
         default='user'
     )
     bio = models.TextField(
         help_text='bio',
         blank=True,
+        verbose_name='Биография'
     )
 
     @property
@@ -41,6 +44,6 @@ class User(AbstractUser):
         verbose_name_plural = 'User'
 
     def save(self, *args, **kwargs):
-        if self.role == 'admin':
+        if self.role == ADMIN_ROLE_NAME:
             self.is_staff = True
         super().save(*args, **kwargs)
